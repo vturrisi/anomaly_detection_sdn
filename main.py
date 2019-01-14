@@ -12,6 +12,8 @@ df = pd.read_csv('datasets/171218_60h6sw_c1_ht5_it0_V2_csv_portscan_ddos.csv')
 features = df.columns[:-1]
 
 data = df.values
+data = data[29000:]
+
 X = data[:, :-1]
 Y = data[:, -1]
 
