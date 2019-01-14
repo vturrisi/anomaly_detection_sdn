@@ -1,11 +1,12 @@
-from denstream import DenStream, gen_data_plot, plot_clusters
-import pandas as pd
-
 import os
+from contextlib import suppress
+from itertools import combinations, cycle
 
-from itertools import cycle, combinations
-
+import pandas as pd
 from sklearn import preprocessing
+
+from denstream import DenStream, gen_data_plot, plot_clusters
+
 
 df = pd.read_csv('datasets/171218_60h6sw_c1_ht5_it0_V2_csv_portscan_ddos.csv')
 features = df.columns[:-1]
@@ -32,7 +33,13 @@ for f1, f2 in combinations(range(6), 2):
     folder = os.path.join('plots', '171218',
         '{} x {}'.format(xfeature_name, yfeature_name))
 
+    with suppress(Exception):
+        os.makedirs(folder)
+
     for i, (x, y) in enumerate(zip(X, Y)):
+        if i > 10000:
+            break
+
         ds.train(x, y)
 
         window = 5000
