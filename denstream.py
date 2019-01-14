@@ -1,7 +1,7 @@
 import math
 import shutil
 import subprocess
-from collections import deque, namedtuple
+from collections import Counter, deque, namedtuple
 from contextlib import suppress
 from io import StringIO
 from math import log2
@@ -12,7 +12,7 @@ import matplotlib.patches as patches
 import matplotlib.pyplot as plt
 import numpy as np
 
-AlphaPoint = namedtuple('AlphaPoint', ['i', 'alpha', 'X'])
+AlphaPoint = namedtuple('AlphaPoint', ['i', 'alpha', 'X', 'y'])
 
 
 class NoMicroClusterException(RuntimeError):
@@ -335,6 +335,16 @@ class DenStream:
             self._weight = 0
             self._Y = []
 
+        def __repr__(self):
+            args = {'id': self._id, 'centroid': self.centroid,
+                    'radius': self.radius, 'class_dist': self.class_dist}
+
+            rpr = ('MicroCluster(id={id},'
+                   ' centroid={centroid},'
+                   ' radius={radius},'
+                   ' class_dist={class_dist})'.format(**args))
+            return rpr
+
         @property
         def centroid(self):
             return self._CF / self._weight
@@ -344,6 +354,10 @@ class DenStream:
             CF1_squared = (self._CF / self._weight) ** 2
             return np.nan_to_num(np.nanmax(((self._CF2/self._weight)
                                  - CF1_squared) ** (1/2)))
+
+        @property
+        def class_dist(self):
+            return Counter(self._Y)
 
         def radius_with_new_point(self, X):
             CF1 = self._CF + X
@@ -381,16 +395,18 @@ class DenStream:
 # auxiliary functions
 
 def gen_data_plot(denstream, points, alpha_range=(0, 1.0)):
-    alphas = np.linspace(*alpha_range, num=100)
-    if len(points) > 50:
-        alphas = ([0] * (len(points) - 50)) + list(alphas)
+    max_points = 1000
+    alphas = np.linspace(*alpha_range, num=max_points)
+    if len(points) > max_points:
+        alphas = ([0.1] * (len(points) - max_points)) + list(alphas)
     normal_points, outliers = [], []
-    for i, (alpha, (X, _)) in enumerate(zip(alphas[-len(points):],
-                                           points)):
+    for i, (alpha, (X, y)) in enumerate(zip(alphas[-len(points):],
+                                            points)):
+        point = AlphaPoint(i=i, alpha=alpha, X=X, y=y)
         if denstream.is_normal(X):
-            normal_points.append(AlphaPoint(i=i, alpha=alpha, X=X))
+            normal_points.append(point)
         else:
-            outliers.append(AlphaPoint(i=i, alpha=alpha, X=X))
+            outliers.append(point)
 
     c_clusters, p_clusters = denstream.generate_clusters()
     # p_clusters = denstream.generate_p_clusters()
@@ -398,15 +414,20 @@ def gen_data_plot(denstream, points, alpha_range=(0, 1.0)):
     return normal_points, outliers, c_clusters, p_clusters, outlier_clusters
 
 
-def plot_clusters(name, normal_points, outliers,
+def plot_clusters(fname, normal_points, outliers,
                   c_clusters, p_clusters, outlier_clusters,
-                  epsilon):
-    plt.figure(figsize=(9, 9), dpi=300)
-    ax = plt.subplot(212)
-    plt.title(f'Test')
+                  epsilon,
+                  title=None, xfeature_name=None, yfeature_name=None):
 
-    ax.set_xlim([0, 3])
-    ax.set_ylim([0, 3])
+    plt.figure(figsize=(9, 9), dpi=300)
+    ax = plt.subplot(111)
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, 1)
+    if title is None:
+        plt.title(fname)
+    else:
+        plt.title(title)
+
     if p_clusters[0]:
         for i, group in enumerate(p_clusters):
             for cluster in group:
@@ -433,23 +454,37 @@ def plot_clusters(name, normal_points, outliers,
     if c_clusters[0]:
         for i, group in enumerate(c_clusters):
             for cluster in group:
-                # print(cluster)
                 if cluster.radius < 0.05:
                     cluster.radius = 0.05
                 ax.add_patch(patches.Circle(cluster.centroid,
                              cluster.radius, fill=False, color='black'))
                 ax.add_patch(patches.Circle(cluster.centroid,
                              epsilon, fill=False, color='black', ls='--'))
-                ax.annotate(f'{i}', xy=cluster.centroid, color='red')
+                ax.annotate(f'{i}', xy=cluster.centroid, color='purple', size=12)
                 # ax.annotate(f'id:{cluster.id}', xy=cluster.centroid, color='red')
 
     for p in normal_points:
-        ax.scatter(*p.X, alpha=p.alpha, color='black', marker='o', s=11)
+        if p.y == 0:
+            color = 'green'
+        else:
+            color = 'red'
+        ax.scatter(*p.X, alpha=p.alpha, color=color, marker='o', s=11)
+        # ax.annotate(p.y, xy=p.X, color=color, size=7)
 
     for p in outliers:
-        ax.scatter(*p.X, alpha=p.alpha, color='orange', marker='x', s=11)
+        if p.y == 0:
+            color = 'green'
+        else:
+            color = 'red'
+        ax.scatter(*p.X, alpha=p.alpha, color=color, marker='x', s=11)
+        # ax.annotate(p.y, xy=p.X, color=color, size=7)
 
+    if xfeature_name is not None:
+        plt.xlabel(xfeature_name)
+
+    if yfeature_name is not None:
+        plt.ylabel(yfeature_name)
 
     plt.tight_layout()
-    plt.savefig(f'plot_{name}.png')
+    plt.savefig(fname)
     plt.close()
