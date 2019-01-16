@@ -8,11 +8,11 @@ from sklearn import preprocessing
 from denstream import DenStream, gen_data_plot, plot_clusters
 
 
-df = pd.read_csv('datasets/171218_60h6sw_c1_ht5_it0_V2_csv_portscan_ddos.csv')
+df = pd.read_csv('datasets/051218_60h6sw_c1_ht5_it0_V2_csv.csv')
 features = df.columns[:-1]
 
 data = df.values
-data = data[29000:]
+# data = data[29000:]
 
 X = data[:, :-1]
 Y = data[:, -1]
@@ -31,21 +31,20 @@ for f1, f2 in combinations(range(6), 2):
 
     xfeature_name = features[f1]
     yfeature_name = features[f2]
+    print('runing for {} and {}'.format(xfeature_name, yfeature_name))
 
-    folder = os.path.join('plots', '171218',
+    folder = os.path.join('plots', '051218_no_infection',
         '{} x {}'.format(xfeature_name, yfeature_name))
 
     with suppress(Exception):
         os.makedirs(folder)
 
     for i, (x, y) in enumerate(zip(X, Y)):
-        if i > 10000:
-            break
-
         ds.train(x, y)
 
-        window = 5000
-        if i != 0 and i % 1000 == 0:
+        window = 10000
+        if i != 0 and i % 5000 == 0:
+            print(i, end=' ')
             start = i - window
             if start < 0:
                 start = 0
@@ -59,3 +58,5 @@ for f1, f2 in combinations(range(6), 2):
             plot_clusters(fname, normal_points, outliers, c_clusters, p_clusters,
                           outlier_clusters, ds._epsilon, title='plot {}'.format(i),
                           xfeature_name=xfeature_name, yfeature_name=yfeature_name)
+
+    print()
