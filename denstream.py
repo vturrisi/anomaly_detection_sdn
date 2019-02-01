@@ -1,13 +1,7 @@
 import math
-import shutil
-import subprocess
 from collections import Counter, deque, namedtuple
 from contextlib import suppress
-from io import StringIO
-from math import log2
-from multiprocessing import Pool
 
-import matplotlib.image as mpimg
 import matplotlib.patches as patches
 import matplotlib.pyplot as plt
 import numpy as np

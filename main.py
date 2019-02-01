@@ -14,30 +14,42 @@ names = ['051218',
          '171218']
 
 
-if 'hp_list.pkl' in os.listdir():
-    import pickle
-    hyperparameters = pickle.load(open('hp_list.pkl', 'rb'))
-    lambdas = hyperparameters['lambdas']
-    betas = hyperparameters['betas']
-    epsilons = hyperparameters['epsilons']
-    mus = hyperparameters['mus']
-    speeds = hyperparameters['speeds']
+log_folder = 'csv_logs'
 
-else:
-    lambdas = np.random.uniform(0, 0.2, size=5)
-    betas = np.random.uniform(0, 0.6, size=5)
-    epsilons = [0.05, 0.10, 0.15]
-    mus = [50, 100, 250, 500, 1000]
-    speeds = [100, 250, 500, 1000]
 
-    import pickle
-    hyperparameters = {'lambdas': lambdas,
-                       'betas': betas,
-                       'epsilons': epsilons,
-                       'mus': mus,
-                       'speeds': speeds}
-    pickle.dump(hyperparameters, open('hp_list.pkl', 'wb'))
+with suppress(Exception):
+    os.mkdir(log_folder)
 
+
+# if 'hp_list.pkl' in os.listdir():
+#     import pickle
+#     hyperparameters = pickle.load(open('hp_list.pkl', 'rb'))
+#     lambdas = hyperparameters['lambdas']
+#     betas = hyperparameters['betas']
+#     epsilons = hyperparameters['epsilons']
+#     mus = hyperparameters['mus']
+#     speeds = hyperparameters['speeds']
+
+# else:
+#     lambdas = np.random.uniform(0, 0.2, size=5)
+#     betas = np.random.uniform(0, 0.6, size=5)
+#     epsilons = [0.05, 0.10, 0.15]
+#     mus = [50, 100, 250, 500, 1000]
+#     speeds = [100, 250, 500, 1000]
+
+#     import pickle
+#     hyperparameters = {'lambdas': lambdas,
+#                        'betas': betas,
+#                        'epsilons': epsilons,
+#                        'mus': mus,
+#                        'speeds': speeds}
+#     pickle.dump(hyperparameters, open('hp_list.pkl', 'wb'))
+
+lambdas = [0.06807737612366145]
+betas = [0.3004826601733964]
+epsilons = [0.05]
+mus = [250]
+speeds = [1000]
 
 for name, dataset in zip(names, ['051218_60h6sw_c1_ht5_it0_V2_csv_ddos_portscan.csv',
                                  '051218_60h6sw_c1_ht5_it0_V2_csv.csv',
@@ -73,14 +85,13 @@ for name, dataset in zip(names, ['051218_60h6sw_c1_ht5_it0_V2_csv_ddos_portscan.
 
         X = Xscaled[:, [f1, f2, f3, f4]]
 
-        result_file = os.path.join(os.path.expanduser('~/Documents/resultados_anomalias/new_tests'),
-                                   fname + '.csv')
+        result_file = os.path.join(log_folder, fname + '.csv')
         try:
             os.remove(result_file)
         except:
             pass
 
-        for i, (x, y) in tqdm(enumerate(zip(X, Y))):
+        for i, (x, y) in tqdm(list(enumerate(zip(X, Y)))):
             ds.train(x, y)
 
             window = 10
