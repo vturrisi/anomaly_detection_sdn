@@ -116,14 +116,6 @@ class DenStream:
                 new_o_mc.update(X, y, self._time)
                 self._o_micro_clusters.append(new_o_mc)
 
-        # try to decay all p_micro_clusters
-        for mc in self._p_micro_clusters:
-            mc.decay(cur_time=self._time)
-
-        # try to decay all o_micro_clusters
-        for mc in self._o_micro_clusters:
-            mc.decay(cur_time=self._time)
-
     def train(self, X, y):
         """
         "Train" Denstream by updating its p_micro_clusters and o_micro_clusters
@@ -134,6 +126,13 @@ class DenStream:
         # update time every stream_speed instances
         if self._no_processed_points % self._stream_speed == 0:
             self._time += 1
+            # try to decay all p_micro_clusters
+            for mc in self._p_micro_clusters:
+                mc.decay(cur_time=self._time)
+
+            # try to decay all o_micro_clusters
+            for mc in self._o_micro_clusters:
+                mc.decay(cur_time=self._time)
 
         if not self._initiated:
             self._initiate_buffer.append((X, y))
@@ -171,7 +170,7 @@ class DenStream:
             # if mc.radius_with_new_point(X) <= self._epsilon:
             #     return True
             dist = self.euclidean_distance(X, mc.centroid)
-            if dist <= mc.radius:
+            if dist <= mc.radius:  # dist <= self._epsilon
                 return True
 
         return False
@@ -323,7 +322,6 @@ class DenStream:
                              weight=mc._weight)
                 for mc in self._o_micro_clusters]
 
-
     class MicroCluster:
         def __init__(self, id_, n_features, time, lambda_):
             self._id = id_
@@ -352,8 +350,8 @@ class DenStream:
         @property
         def radius(self):
             CF1_squared = (self._CF / self._weight) ** 2
-            return np.nan_to_num(np.nanmax(((self._CF2/self._weight)
-                                 - CF1_squared) ** (1/2)))
+            return np.nan_to_num(np.nanmax(((self._CF2 / self._weight)
+                                             - CF1_squared) ** (1 / 2)))
 
         @property
         def class_dist(self):
@@ -379,7 +377,6 @@ class DenStream:
                 self._CF *= factor
                 self._CF2 *= factor
                 self._weight *= factor
-
 
     class Cluster:
         def __init__(self, id_, centroid, radius, weight):
@@ -412,6 +409,26 @@ def gen_data_plot(denstream, points, alpha_range=(0, 1.0)):
     # p_clusters = denstream.generate_p_clusters()
     outlier_clusters = denstream.generate_outlier_clusters()
     return normal_points, outliers, c_clusters, p_clusters, outlier_clusters
+
+
+def save_clusters_info(instances_id, denstream, fname):
+    c_clusters, p_clusters = denstream.generate_clusters()
+    # p_clusters = denstream.generate_p_clusters()
+    outlier_clusters = denstream.generate_outlier_clusters()
+    with open(fname, 'a') as f:
+        f.write(f'instancia {instances_id};')
+        for group in c_clusters:
+            for i, c in enumerate(group):
+                f.write(f'c_cluster(group{i});{c.id};{c.centroid};{c.radius};{c.weight};')
+
+        for group in p_clusters:
+            for i, c in enumerate(group):
+                f.write(f'p_cluster(group{i});{c.id};{c.centroid};{c.radius};{c.weight};')
+
+        for c in outlier_clusters:
+            f.write(f'o_cluster;{c.id};{c.centroid};{c.radius};{c.weight};')
+
+        f.write('\n')
 
 
 def plot_clusters(fname, normal_points, outliers,
