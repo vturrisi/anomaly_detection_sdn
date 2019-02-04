@@ -40,6 +40,7 @@ for dataset, filterfunc, dfname in [('051218',
 
     for f in tqdm(list(filter(filterfunc, dump_files))):
         data = pickle.load(open(os.path.join(dump_folder, f), 'rb'))
+        plt.figure(figsize=(7, 5))
 
         x = list(data.keys())
         n_c_clusters = []
@@ -50,32 +51,70 @@ for dataset, filterfunc, dfname in [('051218',
             n_p_clusters.append(partial['n_p_clusters'])
             n_o_clusters.append(partial['n_o_clusters'])
 
-        plt.plot(x, n_c_clusters, c='blue', label='number of c_clusters')
-        plt.plot(x, n_p_clusters, c='red', label='number of p_clusters')
-        plt.plot(x, n_o_clusters, c='green', label='number of o_clusters')
+        plt.plot(x, n_o_clusters, c='red', label='O-micro-cluster', alpha=0.4, linewidth=1.8)
+        plt.plot(x, n_c_clusters, c='blue', label='C-micro-cluster', alpha=0.4, linewidth=1.8)
+        plt.plot(x, n_p_clusters, c='green', label='P-micro-cluster', linewidth=1.8)
         plotted_malicious_to_normal = False
         plotted_normal_to_malicious = False
-        for class_, change in changes:
-            if class_ == 0:
-                color = 'black'
-                if not plotted_malicious_to_normal:
-                    label = 'changed from malicious to legit'
-                    plotted_malicious_to_normal = True
-                else:
-                    label = None
-            else:
-                color = 'magenta'
-                if not plotted_malicious_to_normal:
-                    label = 'changed from legit to malicious'
-                    plotted_normal_to_malicious = True
-                else:
-                    label = None
-            plt.plot([change, change], [0, 6], c=color, linestyle='--', label=label)
 
-        plt.legend(loc='upper left', fontsize=8)
-        plt.ylim(0, 8)
-        plt.xlabel('Number of instances')
-        plt.ylabel('Number of micro clusters')
-        name = f.replace('.pkl', '.pdf')
+        if changes:
+            change = changes[0][1]
+            if '051218' in dataset:
+                label = 'DDOS'
+                color = 'magenta'
+            else:
+                label = 'PortScan'
+                color = 'orange'
+            plt.plot([change, change], [0, 17], c=color, linestyle='--', label=label, linewidth=1.8)
+
+            change = changes[1][1]
+            plt.plot([change, change], [0, 17], c='black', linestyle=':', label='End of infection', linewidth=1.8)
+
+            change = changes[2][1]
+            if '051218' in dataset:
+                label = 'PortScan'
+                color = 'orange'
+            else:
+                label = 'DDOS'
+                color = 'magenta'
+            plt.plot([change, change], [0, 17], c=color, linestyle='--', label=label, linewidth=1.8)
+
+            change = changes[3][1]
+            plt.plot([change, change], [0, 17], c='black', linestyle=':', label=None, linewidth=1.8)
+
+            # For datasets concatenated
+            #
+            # change = changes[4][1]
+            # if '051218' in dataset:
+            #     label = 'DDOS'
+            #     color = 'magenta'
+            # else:
+            #     label = 'PortScan'
+            #     color = 'orange'
+            # plt.plot([change, change], [0, 17], c=color, linestyle='--', label=None)
+
+            # change = changes[5][1]
+            # plt.plot([change, change], [0, 17], c='black', linestyle=':', label=None)
+
+            # change = changes[6][1]
+            # if '051218' in dataset:
+            #     label = 'PortScan'
+            #     color = 'orange'
+            # else:
+            #     label = 'DDOS'
+            #     color = 'magenta'
+            # plt.plot([change, change], [0, 17], c=color, linestyle='--', label=None)
+
+            # change = changes[7][1]
+            # plt.plot([change, change], [0, 17], c='black', linestyle=':', label=None)
+
+        # plt.legend(loc='upper center', fontsize=8, ncol=6, bbox_to_anchor=(0, 0.15, 1, 1), fancybox=True)
+        plt.ylim(0, 17)
+        plt.xticks(fontsize=12)
+        plt.yticks(fontsize=12)
+        plt.xlabel('Number of instances', fontsize=20)
+        plt.ylabel('Number of micro clusters', fontsize=20)
+        name = f[:-4].replace('.', '_') + '.pdf'
+        plt.tight_layout()
         plt.savefig(os.path.join(plot_folder, name))
         plt.close()

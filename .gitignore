@@ -2,6 +2,8 @@ csv_logs/*
 dump_logs/*
 plots/*
 plots_clusters/*
+plots_weights/*
+
 
 # Created by https://www.gitignore.io/api/python,visualstudiocode
 # Edit at https://www.gitignore.io/?templates=python,visualstudiocode

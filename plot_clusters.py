@@ -18,47 +18,53 @@ with suppress(Exception):
     os.mkdir(plots_folder)
 
 def plot(data, fname, i, features):
-    fig, axes = plt.subplots(1, 5, figsize=(15, 3))
-    for ax, (f1, f2) in zip(axes, combinations(range(4), 2)):
-        f1_name = features[f1]
-        f2_name = features[f2]
-        for c in data['c_clusters']:
-            ax.add_patch(patches.Circle(c['centroid'][[f1, f2]],
-                                        c['radius'] + 0.001, fill=False,
-                                        color='black', ls='--'))
-            ax.annotate('{}'.format(c['id']), xy=c['centroid'][[f1, f2]] + 0.01,
-                        color='black', fontsize=7)
-        for c in data['p_clusters']:
-            ax.add_patch(patches.Circle(c['centroid'][[f1, f2]],
-                                        c['radius'] + 0.001, fill=False,
-                                        color='blue', ls='--'))
-            ax.annotate('{}'.format(c['id']), xy=c['centroid'][[f1, f2]] + 0.01,
-                        color='black', fontsize=7)
-        for c in data['o_clusters']:
-            ax.add_patch(patches.Circle(c['centroid'][[f1, f2]],
-                                        c['radius'] + 0.001, fill=False,
-                                        color='red', ls='--'))
-            ax.annotate('{}'.format(c['id']), xy=c['centroid'][[f1, f2]] + 0.01,
-                        color='black', fontsize=7)
+    fig, axes = plt.subplots(1, 1, figsize=(5, 5))
+    # for ax, (f1, f2) in zip(axes, combinations(range(4), 2)):
+    ax = axes
+    f1, f2 = 0, 1
+    f1_name = features[f1]
+    f2_name = features[f2]
+    for c in data['c_clusters']:
+        ax.add_patch(patches.Circle(c['centroid'][[f1, f2]],
+                                    c['radius'] + 0.001, fill=False,
+                                    color='blue', ls='-', linewidth=1.5))
+        ax.annotate('{}'.format(c['id']), xy=c['centroid'][[f1, f2]] + 0.01,
+                    color='black', fontsize=15)
+    for c in data['p_clusters']:
+        ax.add_patch(patches.Circle(c['centroid'][[f1, f2]],
+                                    c['radius'] + 0.001, fill=False,
+                                    color='green', ls='-', linewidth=1.5))
+        ax.annotate('{}'.format(c['id']), xy=c['centroid'][[f1, f2]] + 0.01,
+                    color='black', fontsize=15)
+    for c in data['o_clusters']:
+        ax.add_patch(patches.Circle(c['centroid'][[f1, f2]],
+                                    c['radius'] + 0.001, fill=False,
+                                    color='red', ls='-', linewidth=1.5))
+        ax.annotate('{}'.format(c['id']), xy=c['centroid'][[f1, f2]] + 0.01,
+                    color='black', fontsize=15)
 
-        ax.set_xlabel(f1_name)
-        ax.set_ylabel(f2_name)
-        ax.set_xlim(0, 1)
-        ax.set_ylim(0, 1)
-    colors = ['black', 'blue', 'red']
-    lines = [Line2D([0], [0], color=c, linewidth=3, linestyle='--') for c in colors]
-    labels = ['c_cluster', 'p_cluster', 'o_cluster']
-    leg = fig.legend(lines, labels, ncol=3, loc='lower center', bbox_to_anchor=(0, 0, 1, 1))
-    plt.tight_layout(rect=[0, 0.1, 1, 1])
+    ax.set_xlabel(f1_name, fontsize=20)
+    ax.set_ylabel(f2_name, fontsize=20)
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, 1)
+    plt.xticks(fontsize=15)
+    plt.yticks(fontsize=15)
 
-    name = fname.replace('.pkl', '_{}_.pdf'.format(i))
+    colors = ['blue', 'green', 'red']
+    lines = [Line2D([0], [0], color=c, linewidth=3, linestyle='-') for c in colors]
+    labels = ['C-micro-cluster', 'P-micro-cluster', 'O-micro-cluster']
+    # leg = fig.legend(lines, labels, ncol=3, loc='lower center', bbox_to_anchor=(0, 0, 1, 1))
+    # plt.tight_layout(rect=[0, 0.1, 1, 1])
+    plt.tight_layout()
+    name = fname[:-4].replace('.', '_') + '_{}.pdf'.format(i)
     plt.savefig((os.path.join(plots_folder, name)))
     plt.close()
 
 
 datasets_folder = 'datasets'
 
-features = ('H_src_ip', 'H_dst_ip', 'H_src_port', 'H_dst_port')
+# features = ('H_src_ip', 'H_dst_ip', 'H_src_port', 'H_dst_port')
+features = ('H_dist_port', 'H_src_ip')
 
 for dataset, f, dfname in [('051218',
                             '051218_lambda=0.06807737612366145_beta=0.3004826601733964_ep=0.05_mu=250_speed=1000.pkl',
