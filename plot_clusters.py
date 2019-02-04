@@ -21,7 +21,7 @@ def plot(data, fname, i, features):
     fig, axes = plt.subplots(1, 1, figsize=(5, 5))
     # for ax, (f1, f2) in zip(axes, combinations(range(4), 2)):
     ax = axes
-    f1, f2 = 0, 1
+    f1, f2 = 0, 3
     f1_name = features[f1]
     f2_name = features[f2]
     for c in data['c_clusters']:
@@ -53,7 +53,7 @@ def plot(data, fname, i, features):
     colors = ['blue', 'green', 'red']
     lines = [Line2D([0], [0], color=c, linewidth=3, linestyle='-') for c in colors]
     labels = ['C-micro-cluster', 'P-micro-cluster', 'O-micro-cluster']
-    # leg = fig.legend(lines, labels, ncol=3, loc='lower center', bbox_to_anchor=(0, 0, 1, 1))
+    # leg = fig.legend(lines, labels, ncol=3, loc='lower center', bbox_to_anchor=(0, 0, 1, 1), fontsize=8)
     # plt.tight_layout(rect=[0, 0.1, 1, 1])
     plt.tight_layout()
     name = fname[:-4].replace('.', '_') + '_{}.pdf'.format(i)
@@ -63,8 +63,9 @@ def plot(data, fname, i, features):
 
 datasets_folder = 'datasets'
 
-# features = ('H_src_ip', 'H_dst_ip', 'H_src_port', 'H_dst_port')
-features = ('H_dist_port', 'H_src_ip')
+features = ('H_src_ip', 'H_dst_ip', 'H_src_port', 'H_dst_port')
+# features = ('H_src_ip', 'H_dist_port')
+
 
 for dataset, f, dfname in [('051218',
                             '051218_lambda=0.06807737612366145_beta=0.3004826601733964_ep=0.05_mu=250_speed=1000.pkl',
