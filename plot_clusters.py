@@ -52,7 +52,7 @@ def plot(data, fname, i, features):
 
     colors = ['blue', 'green', 'red']
     lines = [Line2D([0], [0], color=c, linewidth=3, linestyle='-') for c in colors]
-    labels = ['C-micro-cluster', 'P-micro-cluster', 'O-micro-cluster']
+    labels = ['C-MC', 'P-MC', 'O-MC']
     # leg = fig.legend(lines, labels, ncol=3, loc='lower center', bbox_to_anchor=(0, 0, 1, 1), fontsize=8)
     # plt.tight_layout(rect=[0, 0.1, 1, 1])
     plt.tight_layout()
@@ -92,11 +92,11 @@ for dataset, f, dfname in [('051218',
 
     fulldata = pickle.load(open(os.path.join(dump_folder, f), 'rb'))
     n_p_clusters = fulldata[50]['n_p_clusters']
-    for i in tqdm(list(range(100, list(fulldata.keys())[-1], 50))):
+    for i in tqdm(list(range(50, list(fulldata.keys())[-1], 1))):
         data = fulldata[i]
         if n_p_clusters != data['n_p_clusters']:
             n_p_clusters = data['n_p_clusters']
 
-            plot(fulldata[i - 50], f, i - 50, features)
+            plot(fulldata[i - 1], f, i - 1, features)
 
             plot(fulldata[i], f, i, features)

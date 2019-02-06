@@ -51,16 +51,16 @@ for dataset, filterfunc, dfname in [('051218',
             n_p_clusters.append(partial['n_p_clusters'])
             n_o_clusters.append(partial['n_o_clusters'])
 
-        plt.plot(x, n_o_clusters, c='red', label='O-micro-cluster', alpha=0.4, linewidth=1.8)
-        plt.plot(x, n_c_clusters, c='blue', label='C-micro-cluster', alpha=0.4, linewidth=1.8)
-        plt.plot(x, n_p_clusters, c='green', label='P-micro-cluster', linewidth=1.8)
+        plt.plot(x, n_o_clusters, c='red', label='O-MC', alpha=0.4, linewidth=1.8)
+        plt.plot(x, n_c_clusters, c='blue', label='C-MC', alpha=0.4, linewidth=1.8)
+        plt.plot(x, n_p_clusters, c='green', label='P-MC', linewidth=1.8)
         plotted_malicious_to_normal = False
         plotted_normal_to_malicious = False
 
         if changes:
             change = changes[0][1]
             if '051218' in dataset:
-                label = 'DDOS'
+                label = 'DDoS'
                 color = 'magenta'
             else:
                 label = 'PortScan'
@@ -75,7 +75,7 @@ for dataset, filterfunc, dfname in [('051218',
                 label = 'PortScan'
                 color = 'orange'
             else:
-                label = 'DDOS'
+                label = 'DDoS'
                 color = 'magenta'
             plt.plot([change, change], [0, 17], c=color, linestyle='--', label=label, linewidth=1.8)
 

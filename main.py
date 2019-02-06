@@ -9,7 +9,8 @@ from tqdm import tqdm
 
 from denstream import DenStream, gen_data_plot, plot_clusters, save_clusters_info
 
-names = ['051218',
+names = [
+         '051218',
          '051218_no_infec',
          '171218']
 
@@ -53,7 +54,14 @@ else:
 # mus = [250]
 # speeds = [1000]
 
-for name, dataset in zip(names, ['051218_60h6sw_c1_ht5_it0_V2_csv_ddos_portscan.csv',
+lambdas = [0.06807737612366145]
+betas = [0.3004826601733964]
+epsilons = [0.05]
+mus = [250]
+speeds = [1000]
+
+for name, dataset in zip(names, [
+                                 '051218_60h6sw_c1_ht5_it0_V2_csv_ddos_portscan.csv',
                                  '051218_60h6sw_c1_ht5_it0_V2_csv.csv',
                                  '171218_60h6sw_c1_ht5_it0_V2_csv_portscan_ddos.csv']):
     dataset = os.path.join('datasets', dataset)
@@ -96,8 +104,8 @@ for name, dataset in zip(names, ['051218_60h6sw_c1_ht5_it0_V2_csv_ddos_portscan.
         for i, (x, y) in tqdm(list(enumerate(zip(X, Y)))):
             ds.train(x, y)
 
-            window = 10
-            if i != 0 and i % 50 == 0:
+            window = 2
+            if i != 0 and i % 1 == 0:
                 start = i - window
                 if start < 0:
                     start = 0

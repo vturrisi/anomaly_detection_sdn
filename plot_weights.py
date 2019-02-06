@@ -72,7 +72,7 @@ for dataset, filterfunc, dfname in [('051218_concat',
         if changes:
             change = changes[0][1]
             if '051218' in dataset:
-                label = 'DDOS'
+                label = 'DDoS'
                 color = 'magenta'
             else:
                 label = 'PortScan'
@@ -84,7 +84,7 @@ for dataset, filterfunc, dfname in [('051218_concat',
                 label = 'PortScan'
                 color = 'orange'
             else:
-                label = 'DDOS'
+                label = 'DDoS'
                 color = 'magenta'
             plt.plot([change, change], [0, 17], c=color, linestyle='--', label=label, linewidth=1.8)
 
@@ -96,7 +96,7 @@ for dataset, filterfunc, dfname in [('051218_concat',
 
             change = changes[4][1]
             if '051218' in dataset:
-                label = 'DDOS'
+                label = 'DDoS'
                 color = 'magenta'
             else:
                 label = 'PortScan'
@@ -111,7 +111,7 @@ for dataset, filterfunc, dfname in [('051218_concat',
                 label = 'PortScan'
                 color = 'orange'
             else:
-                label = 'DDOS'
+                label = 'DDoS'
                 color = 'magenta'
             plt.plot([change, change], [0, 17], c=color, linestyle='--', label=None, linewidth=1.8)
 
@@ -119,6 +119,7 @@ for dataset, filterfunc, dfname in [('051218_concat',
             plt.plot([change, change], [0, 17], c='black', linestyle=':', label=None, linewidth=1.8)
 
         # plt.legend(loc='upper center', fontsize=8, ncol=6, bbox_to_anchor=(0, 0.15, 1, 1), fancybox=True)
+        plt.legend(loc='center left', fontsize=12, ncol=1, bbox_to_anchor=(0, 0.3, -0.5, 1), fancybox=True)
         plt.ylim(0, 17)
         plt.xticks(fontsize=12)
         plt.yticks(fontsize=12)
