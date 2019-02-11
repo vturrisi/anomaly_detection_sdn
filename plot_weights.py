@@ -65,7 +65,7 @@ for dataset, filterfunc, dfname in [('051218_concat',
             x = [start]
             for i in range(len(weights) - 1):
                 x.append(50 + x[-1])
-            plt.plot(x, weights, c=color, label=f'cluster id {id_}', linewidth=1.8)
+            plt.plot(x, weights, c=color, label=f'Cluster id {id_}', linewidth=1.8)
 
         plotted_malicious_to_normal = False
         plotted_normal_to_malicious = False
@@ -120,11 +120,11 @@ for dataset, filterfunc, dfname in [('051218_concat',
 
         # plt.legend(loc='upper center', fontsize=8, ncol=6, bbox_to_anchor=(0, 0.15, 1, 1), fancybox=True)
         plt.legend(loc='center left', fontsize=12, ncol=1, bbox_to_anchor=(0, 0.3, -0.5, 1), fancybox=True)
-        plt.ylim(0, 17)
-        plt.xticks(fontsize=12)
-        plt.yticks(fontsize=12)
-        plt.xlabel('Number of instances', fontsize=20)
-        plt.ylabel('Weight of micro clusters (log)', fontsize=20)
+        plt.ylim(0, 18)
+        plt.xticks(fontsize=18, rotation=45)
+        plt.yticks(fontsize=18)
+        plt.xlabel('Number of instances', fontsize=23)
+        plt.ylabel('Weight of micro clusters (log)', fontsize=23)
         name = f[:-4].replace('.', '_') + '_weights' + '.pdf'
         plt.tight_layout()
         plt.savefig(os.path.join(plot_folder, name))

@@ -40,7 +40,7 @@ for dataset, filterfunc, dfname in [('051218',
 
     for f in tqdm(list(filter(filterfunc, dump_files))):
         data = pickle.load(open(os.path.join(dump_folder, f), 'rb'))
-        plt.figure(figsize=(7, 5))
+        plt.figure(figsize=(8, 5))
 
         x = list(data.keys())
         n_c_clusters = []
@@ -51,9 +51,9 @@ for dataset, filterfunc, dfname in [('051218',
             n_p_clusters.append(partial['n_p_clusters'])
             n_o_clusters.append(partial['n_o_clusters'])
 
-        plt.plot(x, n_o_clusters, c='red', label='O-MC', alpha=0.4, linewidth=1.8)
         plt.plot(x, n_c_clusters, c='blue', label='C-MC', alpha=0.4, linewidth=1.8)
         plt.plot(x, n_p_clusters, c='green', label='P-MC', linewidth=1.8)
+        plt.plot(x, n_o_clusters, c='red', label='O-MC', alpha=0.4, linewidth=1.8)
         plotted_malicious_to_normal = False
         plotted_normal_to_malicious = False
 
@@ -108,10 +108,10 @@ for dataset, filterfunc, dfname in [('051218',
             # change = changes[7][1]
             # plt.plot([change, change], [0, 17], c='black', linestyle=':', label=None)
 
-        # plt.legend(loc='upper center', fontsize=8, ncol=6, bbox_to_anchor=(0, 0.15, 1, 1), fancybox=True)
+        plt.legend(loc='upper left', fontsize=12, ncol=2, bbox_to_anchor=(0, 0, 1, 1), fancybox=True)
         plt.ylim(0, 17)
-        plt.xticks(fontsize=12)
-        plt.yticks(fontsize=12)
+        plt.xticks(fontsize=16, rotation=45)
+        plt.yticks(fontsize=16)
         plt.xlabel('Number of instances', fontsize=20)
         plt.ylabel('Number of micro clusters', fontsize=20)
         name = f[:-4].replace('.', '_') + '.pdf'

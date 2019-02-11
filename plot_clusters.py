@@ -29,31 +29,31 @@ def plot(data, fname, i, features):
                                     c['radius'] + 0.001, fill=False,
                                     color='blue', ls='-', linewidth=1.5))
         ax.annotate('{}'.format(c['id']), xy=c['centroid'][[f1, f2]] + 0.01,
-                    color='black', fontsize=15)
+                    color='black', fontsize=19)
     for c in data['p_clusters']:
         ax.add_patch(patches.Circle(c['centroid'][[f1, f2]],
                                     c['radius'] + 0.001, fill=False,
                                     color='green', ls='-', linewidth=1.5))
         ax.annotate('{}'.format(c['id']), xy=c['centroid'][[f1, f2]] + 0.01,
-                    color='black', fontsize=15)
+                    color='black', fontsize=19)
     for c in data['o_clusters']:
         ax.add_patch(patches.Circle(c['centroid'][[f1, f2]],
                                     c['radius'] + 0.001, fill=False,
                                     color='red', ls='-', linewidth=1.5))
         ax.annotate('{}'.format(c['id']), xy=c['centroid'][[f1, f2]] + 0.01,
-                    color='black', fontsize=15)
+                    color='black', fontsize=19)
 
-    ax.set_xlabel(f1_name, fontsize=20)
-    ax.set_ylabel(f2_name, fontsize=20)
+    ax.set_xlabel(f1_name, fontsize=24)
+    ax.set_ylabel(f2_name, fontsize=24)
     ax.set_xlim(0, 1)
     ax.set_ylim(0, 1)
-    plt.xticks(fontsize=15)
-    plt.yticks(fontsize=15)
+    plt.xticks(fontsize=23)
+    plt.yticks(fontsize=23)
 
-    colors = ['blue', 'green', 'red']
+    colors = ['blue', 'green']
     lines = [Line2D([0], [0], color=c, linewidth=3, linestyle='-') for c in colors]
-    labels = ['C-MC', 'P-MC', 'O-MC']
-    # leg = fig.legend(lines, labels, ncol=3, loc='lower center', bbox_to_anchor=(0, 0, 1, 1), fontsize=8)
+    labels = ['C-MC', 'P-MC']
+    # leg = fig.legend(lines, labels, ncol=2, loc='lower center', bbox_to_anchor=(0, 0, 1, 1), fontsize=8)
     # plt.tight_layout(rect=[0, 0.1, 1, 1])
     plt.tight_layout()
     name = fname[:-4].replace('.', '_') + '_{}.pdf'.format(i)
