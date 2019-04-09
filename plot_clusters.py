@@ -43,8 +43,26 @@ def plot(data, fname, i, features):
         ax.annotate('{}'.format(c['id']), xy=c['centroid'][[f1, f2]] + 0.01,
                     color='black', fontsize=19)
 
-    ax.set_xlabel(f1_name, fontsize=24)
-    ax.set_ylabel(f2_name, fontsize=24)
+    if f1_name == 'H_src_ip':
+        x_label = 'Entropy Src IP'
+    elif f1_name == 'H_dst_ip':
+        x_label = 'Entropy Dest IP'
+    elif f1_name == 'H_src_port':
+        x_label = 'Entropy Src Port'
+    elif f1_name == 'H_dst_port':
+        x_label = 'Entropy Dest Port'
+
+    if f2_name == 'H_src_ip':
+        y_label = 'Entropy Src IP'
+    elif f2_name == 'H_dst_ip':
+        y_label = 'Entropy Dest IP'
+    elif f2_name == 'H_src_port':
+        y_label = 'Entropy Src Port'
+    elif f2_name == 'H_dst_port':
+        y_label = 'Entropy Dest Port'
+
+    ax.set_xlabel(x_label, fontsize=24)
+    ax.set_ylabel(y_label, fontsize=24)
     ax.set_xlim(0, 1)
     ax.set_ylim(0, 1)
     plt.xticks(fontsize=23)

@@ -40,7 +40,7 @@ for dataset, filterfunc, dfname in [('051218',
 
     for f in tqdm(list(filter(filterfunc, dump_files))):
         data = pickle.load(open(os.path.join(dump_folder, f), 'rb'))
-        plt.figure(figsize=(8, 5))
+        plt.figure(figsize=(8, 4))
 
         x = list(data.keys())
         n_c_clusters = []
@@ -109,11 +109,11 @@ for dataset, filterfunc, dfname in [('051218',
             # plt.plot([change, change], [0, 17], c='black', linestyle=':', label=None)
 
         plt.legend(loc='upper left', fontsize=12, ncol=2, bbox_to_anchor=(0, 0, 1, 1), fancybox=True)
-        plt.ylim(0, 17)
+        plt.ylim(0, 10)
         plt.xticks(fontsize=16, rotation=45)
         plt.yticks(fontsize=16)
         plt.xlabel('Number of instances', fontsize=20)
-        plt.ylabel('Number of micro clusters', fontsize=20)
+        plt.ylabel('Number of MCs', fontsize=20)
         name = f[:-4].replace('.', '_') + '.pdf'
         plt.tight_layout()
         plt.savefig(os.path.join(plot_folder, name))

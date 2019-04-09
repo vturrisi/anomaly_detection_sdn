@@ -120,11 +120,11 @@ for dataset, filterfunc, dfname in [('051218_concat',
 
         # plt.legend(loc='upper center', fontsize=8, ncol=6, bbox_to_anchor=(0, 0.15, 1, 1), fancybox=True)
         plt.legend(loc='center left', fontsize=12, ncol=1, bbox_to_anchor=(0, 0.3, -0.5, 1), fancybox=True)
-        plt.ylim(0, 18)
+        plt.ylim(0, 17)
         plt.xticks(fontsize=18, rotation=45)
         plt.yticks(fontsize=18)
         plt.xlabel('Number of instances', fontsize=23)
-        plt.ylabel('Weight of micro clusters (log)', fontsize=23)
+        plt.ylabel('Weight of MCs (log)', fontsize=23)
         name = f[:-4].replace('.', '_') + '_weights' + '.pdf'
         plt.tight_layout()
         plt.savefig(os.path.join(plot_folder, name))
