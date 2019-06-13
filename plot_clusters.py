@@ -18,12 +18,14 @@ with suppress(Exception):
     os.mkdir(plots_folder)
 
 def plot(data, fname, i, features):
+    global all_features
+
     fig, axes = plt.subplots(1, 1, figsize=(5, 5))
     # for ax, (f1, f2) in zip(axes, combinations(range(4), 2)):
     ax = axes
-    f1, f2 = 0, 3
-    f1_name = features[f1]
-    f2_name = features[f2]
+    f1_name, f2_name = features
+    f1 = all_features.index(f1_name)
+    f2 = all_features.index(f2_name)
     for c in data['c_clusters']:
         ax.add_patch(patches.Circle(c['centroid'][[f1, f2]],
                                     c['radius'] + 0.001, fill=False,
@@ -81,24 +83,17 @@ def plot(data, fname, i, features):
 
 datasets_folder = 'datasets'
 
-features = ('H_src_ip', 'H_dst_ip', 'H_src_port', 'H_dst_port')
-# features = ('H_src_ip', 'H_dist_port')
+all_features = ('H_src_ip', 'H_dst_ip', 'H_src_port', 'H_dst_port')
+features = ('H_src_ip', 'H_dst_port')  # select 2 features (x and y axis)
 
 
-for dataset, f, dfname in [('051218',
-                            '051218_lambda=0.06807737612366145_beta=0.3004826601733964_ep=0.05_mu=250_speed=1000.pkl',
-                            os.path.join(datasets_folder,
-                                         '051218_60h6sw_c1_ht5_it0_V2_csv_ddos_portscan.csv')),
+for dump_file in tqdm(os.listdir(dump_folder)):
+    dump_file = os.path.join(dump_folder, dump_file)
+    fulldata = pickle.load(open(dump_file, 'rb'))
 
-                           ('051218_no_infec',
-                            '051218_no_infec_lambda=0.06807737612366145_beta=0.3004826601733964_ep=0.05_mu=250_speed=1000.pkl',
-                            os.path.join(datasets_folder,
-                                         '051218_60h6sw_c1_ht5_it0_V2_csv.csv')),
+    dataset = os.path.splitext(os.path.basename(dump_file))[0].split('_lambda')[0]
+    dfname = os.path.join(datasets_folder, dataset) + '.csv'
 
-                           ('171218',
-                            '171218_lambda=0.06807737612366145_beta=0.3004826601733964_ep=0.05_mu=250_speed=1000.pkl',
-                            os.path.join(datasets_folder,
-                                         '171218_60h6sw_c1_ht5_it0_V2_csv_portscan_ddos.csv'))]:
     df = pd.read_csv(dfname)
 
     changes = []
@@ -108,13 +103,12 @@ for dataset, f, dfname in [('051218',
             current_c = c
             changes.append((c, i))
 
-    fulldata = pickle.load(open(os.path.join(dump_folder, f), 'rb'))
     n_p_clusters = fulldata[50]['n_p_clusters']
     for i in tqdm(list(range(50, list(fulldata.keys())[-1], 1))):
         data = fulldata[i]
         if n_p_clusters != data['n_p_clusters']:
             n_p_clusters = data['n_p_clusters']
 
-            plot(fulldata[i - 1], f, i - 1, features)
+            plot(fulldata[i - 1], dataset, i - 1, features)
 
-            plot(fulldata[i], f, i, features)
+            plot(fulldata[i], dataset, i, features)

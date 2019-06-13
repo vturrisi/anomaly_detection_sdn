@@ -9,11 +9,6 @@ from tqdm import tqdm
 
 from denstream import DenStream, gen_data_plot, plot_clusters, save_clusters_info
 
-names = [
-         '051218',
-         '051218_no_infec',
-         '171218']
-
 
 log_folder = 'csv_logs'
 
@@ -46,25 +41,16 @@ else:
                        'speeds': speeds}
     pickle.dump(hyperparameters, open('hp_list.pkl', 'wb'))
 
-# when running concat base
-
+# if needed, set HP manually in the same format as follows
 # lambdas = [0.06807737612366145]
 # betas = [0.3004826601733964]
 # epsilons = [0.05]
 # mus = [250]
 # speeds = [1000]
 
-lambdas = [0.06807737612366145]
-betas = [0.3004826601733964]
-epsilons = [0.05]
-mus = [250]
-speeds = [1000]
-
-for name, dataset in zip(names, [
-                                 '051218_60h6sw_c1_ht5_it0_V2_csv_ddos_portscan.csv',
-                                 '051218_60h6sw_c1_ht5_it0_V2_csv.csv',
-                                 '171218_60h6sw_c1_ht5_it0_V2_csv_portscan_ddos.csv']):
+for dataset in os.listdir('datasets'):
     dataset = os.path.join('datasets', dataset)
+    name = os.path.splitext(os.path.basename(dataset))[0]
     for lambda_, beta, ep, mu, speed in product(lambdas, betas, epsilons, mus, speeds):
         fname = f'{name}_lambda={lambda_}_beta={beta}_ep={ep}_mu={mu}_speed={speed}'
 
@@ -72,7 +58,6 @@ for name, dataset in zip(names, [
         features = list(df.columns[:-1])
 
         data = df.values
-        # data = data[29000:]
 
         X = data[:, :-1]
         Y = data[:, -1]
