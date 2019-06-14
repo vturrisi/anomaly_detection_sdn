@@ -20,7 +20,7 @@ for dump_file in tqdm(os.listdir(dump_folder)):
     dump_file = os.path.join(dump_folder, dump_file)
     data = pickle.load(open(dump_file, 'rb'))
 
-    dataset = os.path.splitext(os.path.basename(dump_file))[0].split('_lambda')[0]
+    dataset = os.path.splitext(os.path.basename(dump_file))[0].split('.pkl_lambda')[0]
     dfname = os.path.join(datasets_folder, dataset) + '.csv'
 
     df = pd.read_csv(dfname)
